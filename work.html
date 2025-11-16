@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work - pearl</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0D0D0D;
+            --bg-light: #F5F5F5;
+            --text-white: #FFFFFF;
+            --text-dark: #0D0D0D;
+            --text-gray: #808080;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            overflow-x: hidden;
+            cursor: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            width: 16px;
+            height: 16px;
+            background: var(--text-white);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translate(-50%, -50%);
+        }
+
+        .custom-cursor.cursor-hover {
+            transform: translate(-50%, -50%) scale(2.5);
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            mix-blend-mode: difference;
+            transition: all 0.15s ease-out;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 32px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(13, 13, 13, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-white);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 48px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            opacity: 1;
+        }
+
+        .nav-cta {
+            background: var(--text-white);
+            color: var(--bg-dark) !important;
+            padding: 12px 24px;
+            border-radius: 100px;
+            opacity: 1 !important;
+            font-weight: 600;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-white);
+            transition: all 0.3s ease;
+        }
+
+        /* Page Hero */
+        .page-hero {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 150px 48px 80px;
+            text-align: center;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(56px, 10vw, 120px);
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+        }
+
+        .page-hero p {
+            font-size: clamp(18px, 2vw, 24px);
+            color: var(--text-gray);
+            max-width: 720px;
+            line-height: 1.5;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.4s forwards;
+        }
+
+        /* Work Grid */
+        .work-section {
+            padding: 80px 48px 120px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 80px;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.6s forwards;
+        }
+
+        .filter-btn {
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-white);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--text-white);
+            color: var(--bg-dark);
+            border-color: var(--text-white);
+        }
+
+        .work-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 48px;
+        }
+
+        .work-card {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .work-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .work-card-image {
+            width: 100%;
+            aspect-ratio: 4/3;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .work-card-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0);
+            transition: all 0.6s ease;
+        }
+
+        .work-card:hover .work-card-image::after {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .work-card-image-inner {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .work-card:hover .work-card-image-inner {
+            transform: scale(1.05);
+        }
+
+        .work-card-content {
+            padding: 0 8px;
+        }
+
+        .work-card-category {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-purple);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .work-card-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+            transition: color 0.3s ease;
+        }
+
+        .work-card:hover .work-card-title {
+            color: var(--accent-purple);
+        }
+
+        .work-card-description {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .work-card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        /* Stats Banner */
+        .stats-banner {
+            padding: 100px 48px;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            text-align: center;
+        }
+
+        .stats-banner-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 48px;
+        }
+
+        .stat-item {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .stat-item.visible {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .stat-number {
+            font-size: clamp(48px, 6vw, 72px);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 120px 48px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(40px, 8vw, 80px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 32px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            color: var(--text-gray);
+            margin-bottom: 48px;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            background: var(--text-white);
+            color: var(--bg-dark);
+            text-decoration: none;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.4s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark);
+            padding: 80px 48px 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 64px;
+            margin-bottom: 64px;
+        }
+
+        .footer-brand h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .footer-links h4 {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            color: var(--text-gray);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 15px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-social a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            color: var(--text-white);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .work-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-banner-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                cursor: auto;
+            }
+
+            .custom-cursor, .cursor-outline {
+                display: none;
+            }
+
+            header {
+                padding: 20px 24px;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            nav ul {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background: rgba(13, 13, 13, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 100px 40px;
+                gap: 32px;
+                transition: right 0.4s ease;
+                align-items: flex-start;
+            }
+
+            nav ul.active {
+                right: 0;
+            }
+
+            .page-hero {
+                padding: 120px 24px 60px;
+            }
+
+            .work-section {
+                padding: 60px 24px;
+            }
+
+            .stats-banner {
+                padding: 60px 24px;
+            }
+
+            .stats-banner-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Header -->
+    <header>
+        <a href="index.html" class="logo">pearl</a>
+        <nav>
+            <ul id="navMenu">
+                <li><a href="work.html" class="active">Work</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html" class="nav-cta">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <h1>Our Work</h1>
+        <p>Explore our portfolio of successful projects. Each one tells a unique story of collaboration, creativity, and innovation.</p>
+    </section>
+
+    <!-- Work Section -->
+    <section class="work-section">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All Projects</button>
+            <button class="filter-btn" data-filter="branding">Branding</button>
+            <button class="filter-btn" data-filter="web">Web Design</button>
+            <button class="filter-btn" data-filter="product">Product Design</button>
+            <button class="filter-btn" data-filter="mobile">Mobile App</button>
+        </div>
+
+        <div class="work-grid">
+            <div class="work-card" data-category="branding">
+                <div class="work-card-image">
+                    <div class="work-card-image-inner" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        🎨
+                    </div>
+                </div>
+                <div class="work-card-content">
+                    <div class="work-card-category">Branding</div>
+                    <h3 class="work-card-title">Minimal Brand Identity</h3>
+                    <p class="work-card-description">A complete brand overhaul for a tech startup, featuring a modern logo, color palette, and brand guidelines.</p>
+                    <div class="work-card-tags">
+                        <span class="tag">Brand Strategy</span>
+                        <span class="tag">Visual Identity</span>
+                        <span class="tag">Guidelines</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="work-card" data-category="web">
+                <div class="work-card-image">
+                    <div class="work-card-image-inner" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        💻
+                    </div>
+                </div>
+                <div class="work-card-content">
+                    <div class="work-card-category">Web Design</div>
+                    <h3 class="work-card-title">E-Commerce Platform</h3>
+                    <p class="work-card-description">A modern e-commerce website with seamless checkout experience and optimized performance.</p>
+                    <div class="work-card-tags">
+                        <span class="tag">UI/UX</span>
+                        <span class="tag">Development</span>
+                        <span class="tag">E-Commerce</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="work-card" data-category="product">
+                <div class="work-card-image">
+                    <div class="work-card-image-inner" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        📱
+                    </div>
+                </div>
+                <div class="work-card-content">
+                    <div class="work-card-category">Product Design</div>
+                    <h3 class="work-card-title">SaaS Dashboard</h3>
+                    <p class="work-card-description">An intuitive dashboard design for a SaaS platform with complex data visualization.</p>
+                    <div class="work-card-tags">
+                        <span class="tag">Dashboard</span>
+                        <span class="tag">Analytics</span>
+                        <span class="tag">SaaS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="work-card" data-category="mobile">
+                <div class="work-card-image">
+                    <div class="work-card-image-inner" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        📲
+                    </div>
+                </div>
+                <div class="work-card-content">
+                    <div class="work-card-category">Mobile App</div>
+                    <h3 class="work-card-title">Fitness Tracking App</h3>
+                    <p class="work-card-description">A comprehensive fitness app with workout tracking, nutrition planning, and social features.</p>
+                    <div class="work-card-tags">
+                        <span class="tag">iOS</span>
+                        <span class="tag">Android</span>
+                        <span class="tag">Health</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="work-card" data-category="branding">
+                <div class="work-card-image">
+                    <div class="work-card-image-inner" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+                        🏢
+                    </div>
+                </div>
+                <div class="work-card-content">
+                    <div class="work-card-category">Branding</div>
+                    <h3 class="work-card-title">Corporate Rebranding</h3>
+                    <p class="work-card-description">Complete rebranding for a Fortune 500 company, modernizing their visual identity.</p>
+                    <div class="work-card-tags">
+                        <span class="tag">Corporate</span>
+                        <span class="tag">Rebrand</span>
+                        <span class="tag">Strategy</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="work-card" data-category="web">
+                <div class="work-card-image">
+                    <div class="work-card-image-inner" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                        🎭
+                    </div>
+                </div>
+                <div class="work-card-content">
+                    <div class="work-card-category">Web Design</div>
+                    <h3 class="work-card-title">Creative Portfolio</h3>
+                    <p class="work-card-description">A stunning portfolio website for a creative agency with dynamic animations and transitions.</p>
+                    <div class="work-card-tags">
+                        <span class="tag">Portfolio</span>
+                        <span class="tag">Animation</span>
+                        <span class="tag">Creative</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Banner -->
+    <section class="stats-banner">
+        <div class="stats-banner-grid">
+            <div class="stat-item">
+                <div class="stat-number">250+</div>
+                <div class="stat-label">Projects Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Happy Clients</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">15</div>
+                <div class="stat-label">Awards Won</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">99%</div>
+                <div class="stat-label">Satisfaction Rate</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Have a project in mind?</h2>
+        <p>Let's discuss how we can help bring your vision to life</p>
+        <a href="contact.html" class="cta-btn">
+            <span>Start a Project</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>pearl</h3>
+                <p>A creative studio dedicated to crafting exceptional digital experiences and memorable brand identities.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="work.html">Work</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">Branding</a></li>
+                    <li><a href="services.html">Product Design</a></li>
+                    <li><a href="services.html">Web Design</a></li>
+                    <li><a href="services.html">Development</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Social</h4>
+                <ul>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Dribbble</a></li>
+                    <li><a href="#">Behance</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Pearl. All rights reserved.</p>
+            <div class="footer-social">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let outlineX = 0, outlineY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.5;
+            cursorY += (mouseY - cursorY) * 0.5;
+            outlineX += (mouseX - outlineX) * 0.15;
+            outlineY += (mouseY - outlineY) * 0.15;
+
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            cursorOutline.style.left = outlineX + 'px';
+            cursorOutline.style.top = outlineY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Cursor hover effects
+        const hoverElements = document.querySelectorAll('a, button, .work-card-image');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('cursor-hover');
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('cursor-hover');
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+            });
+        });
+
+        // Mobile menu
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            const spans = menuToggle.querySelectorAll('span');
+            if (navMenu.classList.contains('active')) {
+                spans[0].style.transform = 'rotate(45deg) translateY(8px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translateY(-8px)';
+            } else {
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            }
+        });
+
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const workCards = document.querySelectorAll('.work-card');
+
+        // Create an IntersectionObserver to reveal elements when they enter the viewport
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe initial work cards and stat items
+        workCards.forEach(card => observer.observe(card));
+        document.querySelectorAll('.stat-item').forEach(item => observer.observe(item));
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                workCards.forEach(card => {
+                    const category = card.dataset.category;
+                    if (filter === 'all' || category === filter) {
+                        card.style.display = '';
+                        // ensure reveal observer is observing visible cards
+                        observer.observe(card);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Counter animation
+        function animateCounter(element) {
+            const target = element.textContent;
+            const numericValue = parseInt(target.replace(/\D/g, ''));
+            const suffix = target.replace(/[0-9]/g, '');
+            const duration = 2000;
+            const increment = numericValue / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < numericValue) {
+                    element.textContent = Math.floor(current) + suffix;
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target;
+                }
+            };
+            updateCounter();
+        }
+
+        const statObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                    entry.target.classList.add('counted');
+                    const number = entry.target.querySelector('.stat-number');
+                    animateCounter(number);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-item').forEach(el => statObserver.observe(el));
+    </script>
+</body>
+</html>

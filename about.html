@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - pearl</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0D0D0D;
+            --bg-light: #F5F5F5;
+            --text-white: #FFFFFF;
+            --text-dark: #0D0D0D;
+            --text-gray: #808080;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            overflow-x: hidden;
+            cursor: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            width: 16px;
+            height: 16px;
+            background: var(--text-white);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translate(-50%, -50%);
+        }
+
+        .custom-cursor.cursor-hover {
+            transform: translate(-50%, -50%) scale(2.5);
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            mix-blend-mode: difference;
+            transition: all 0.15s ease-out;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 32px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(13, 13, 13, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-white);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 48px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            opacity: 1;
+        }
+
+        .nav-cta {
+            background: var(--text-white);
+            color: var(--bg-dark) !important;
+            padding: 12px 24px;
+            border-radius: 100px;
+            opacity: 1 !important;
+            font-weight: 600;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-white);
+            transition: all 0.3s ease;
+        }
+
+        /* Page Hero */
+        .page-hero {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 150px 48px 80px;
+            text-align: center;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(56px, 10vw, 120px);
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+        }
+
+        .page-hero p {
+            font-size: clamp(18px, 2vw, 24px);
+            color: var(--text-gray);
+            max-width: 720px;
+            line-height: 1.5;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.4s forwards;
+        }
+
+        /* Story Section */
+        .story-section {
+            padding: 120px 48px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .story-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            margin-bottom: 120px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .story-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .story-text h2 {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+
+        .story-text p {
+            font-size: 18px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .story-image {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+        }
+
+        /* Values Section */
+        .values-section {
+            padding: 120px 48px;
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .values-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+
+        .values-header h2 {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+
+        .values-header p {
+            font-size: 20px;
+            color: #666;
+        }
+
+        .values-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .value-card {
+            background: white;
+            padding: 48px;
+            border-radius: 24px;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .value-card.visible {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+        }
+
+        .value-icon {
+            font-size: 48px;
+            margin-bottom: 24px;
+        }
+
+        .value-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .value-card p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 120px 48px;
+            background: var(--bg-dark);
+        }
+
+        .team-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+
+        .team-header h2 {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+
+        .team-header p {
+            font-size: 20px;
+            color: var(--text-gray);
+        }
+
+        .team-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+
+        .team-member {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .team-member.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .team-photo {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            transition: transform 0.4s ease;
+        }
+
+        .team-member:hover .team-photo {
+            transform: scale(1.05);
+        }
+
+        .team-member h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .team-member p {
+            font-size: 15px;
+            color: var(--text-gray);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 120px 48px;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            text-align: center;
+        }
+
+        .stats-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 64px;
+        }
+
+        .stat-item {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .stat-item.visible {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .stat-number {
+            font-size: clamp(48px, 6vw, 80px);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 120px 48px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(40px, 8vw, 80px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 32px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            color: var(--text-gray);
+            margin-bottom: 48px;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            background: var(--text-white);
+            color: var(--bg-dark);
+            text-decoration: none;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.4s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark);
+            padding: 80px 48px 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 64px;
+            margin-bottom: 64px;
+        }
+
+        .footer-brand h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .footer-links h4 {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            color: var(--text-gray);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 15px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-social a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            color: var(--text-white);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .story-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                cursor: auto;
+            }
+
+            .custom-cursor, .cursor-outline {
+                display: none;
+            }
+
+            header {
+                padding: 20px 24px;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            nav ul {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background: rgba(13, 13, 13, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 100px 40px;
+                gap: 32px;
+                transition: right 0.4s ease;
+                align-items: flex-start;
+            }
+
+            nav ul.active {
+                right: 0;
+            }
+
+            .page-hero {
+                padding: 120px 24px 60px;
+            }
+
+            .story-section, .values-section, .team-section, .stats-section, .cta-section {
+                padding: 60px 24px;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Header -->
+    <header>
+        <a href="index.html" class="logo">pearl</a>
+        <nav>
+            <ul id="navMenu">
+                <li><a href="work.html">Work</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="about.html" class="active">About</a></li>
+                <li><a href="contact.html" class="nav-cta">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <h1>About Pearl</h1>
+        <p>We're a team of passionate designers and developers dedicated to creating exceptional digital experiences.</p>
+    </section>
+
+    <!-- Story Section -->
+    <section class="story-section">
+        <div class="story-content">
+            <div class="story-text">
+                <h2>Our Story</h2>
+                <p>Founded in 2018, Pearl began with a simple mission: to help brands tell their stories through beautiful, functional design. What started as a small team of three has grown into a full-service creative studio.</p>
+                <p>We've worked with startups, Fortune 500 companies, and everything in between. But no matter the size of the project, our approach remains the same: thoughtful design, meticulous execution, and a genuine partnership with our clients.</p>
+            </div>
+            <div class="story-image">🎨</div>
+        </div>
+
+        <div class="story-content">
+            <div class="story-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); order: 1;">💡</div>
+            <div class="story-text" style="order: 2;">
+                <h2>Our Mission</h2>
+                <p>We believe that great design has the power to transform businesses. Our mission is to create digital experiences that not only look beautiful but also drive real results for our clients.</p>
+                <p>We're committed to pushing the boundaries of what's possible, constantly learning, and staying ahead of industry trends to deliver cutting-edge solutions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+        <div class="values-header">
+            <h2>Our Values</h2>
+            <p>The principles that guide everything we do</p>
+        </div>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">🎯</div>
+                <h3>Excellence</h3>
+                <p>We're committed to delivering work of the highest quality. Every pixel, every interaction, every detail matters to us.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🤝</div>
+                <h3>Collaboration</h3>
+                <p>We believe the best work comes from true partnership. We work closely with our clients every step of the way.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">💡</div>
+                <h3>Innovation</h3>
+                <p>We're always exploring new technologies and techniques to stay at the forefront of digital design.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🌱</div>
+                <h3>Growth</h3>
+                <p>We're dedicated to continuous learning and improvement, both for ourselves and our clients.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">⚡</div>
+                <h3>Speed</h3>
+                <p>We move fast without compromising quality, delivering projects on time and within budget.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">❤️</div>
+                <h3>Passion</h3>
+                <p>We love what we do and it shows in every project we take on. Design isn't just our job—it's our calling.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="team-header">
+            <h2>Meet Our Team</h2>
+            <p>The talented people behind Pearl</p>
+        </div>
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="team-photo">👨‍💼</div>
+                <h3>Alex Chen</h3>
+                <p>Founder & Creative Director</p>
+            </div>
+            <div class="team-member">
+                <div class="team-photo" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">👩‍💼</div>
+                <h3>Sarah Johnson</h3>
+                <p>Lead Product Designer</p>
+            </div>
+            <div class="team-member">
+                <div class="team-photo" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">👨‍💻</div>
+                <h3>Michael Park</h3>
+                <p>Senior Developer</p>
+            </div>
+            <div class="team-member">
+                <div class="team-photo" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">👩‍🎨</div>
+                <h3>Emma Davis</h3>
+                <p>Brand Strategist</p>
+            </div>
+            <div class="team-member">
+                <div class="team-photo" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">👨‍🎨</div>
+                <h3>David Lee</h3>
+                <p>UI/UX Designer</p>
+            </div>
+            <div class="team-member">
+                <div class="team-photo" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">👩‍💻</div>
+                <h3>Lisa Wang</h3>
+                <p>Frontend Developer</p>
+            </div>
+            <div class="team-member">
+                <div class="team-photo" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">👨‍🎤</div>
+                <h3>James Wilson</h3>
+                <p>Motion Designer</p>
+            </div>
+            <div class="team-member">
+                <div class="team-photo" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">👩‍💼</div>
+                <h3>Rachel Green</h3>
+                <p>Project Manager</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">250+</div>
+                <div class="stat-label">Projects Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Happy Clients</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">15</div>
+                <div class="stat-label">Awards Won</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Want to join our team?</h2>
+        <p>We're always looking for talented designers and developers</p>
+        <a href="contact.html" class="cta-btn">
+            <span>Get In Touch</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>pearl</h3>
+                <p>A creative studio dedicated to crafting exceptional digital experiences and memorable brand identities.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="work.html">Work</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">Branding</a></li>
+                    <li><a href="services.html">Product Design</a></li>
+                    <li><a href="services.html">Web Design</a></li>
+                    <li><a href="services.html">Development</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Social</h4>
+                <ul>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Dribbble</a></li>
+                    <li><a href="#">Behance</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Pearl. All rights reserved.</p>
+            <div class="footer-social">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let outlineX = 0, outlineY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.5;
+            cursorY += (mouseY - cursorY) * 0.5;
+            outlineX += (mouseX - outlineX) * 0.15;
+            outlineY += (mouseY - outlineY) * 0.15;
+
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            cursorOutline.style.left = outlineX + 'px';
+            cursorOutline.style.top = outlineY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Cursor hover effects
+        const hoverElements = document.querySelectorAll('a, button, .team-photo');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('cursor-hover');
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('cursor-hover');
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+            });
+        });
+
+        // Mobile menu
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            const spans = menuToggle.querySelectorAll('span');
+            if (navMenu.classList.contains('active')) {
+                spans[0].style.transform = 'rotate(45deg) translateY(8px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translateY(-8px)';
+            } else {
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            }
+        });
+
+        // Close menu when clicking on a link
+        const navLinks = navMenu.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                const spans = menuToggle.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        // Observe elements
+        document.querySelectorAll('.story-content, .value-card, .team-member, .stat-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Counter animation for stats
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.dataset.animated) {
+                    entry.target.dataset.animated = 'true';
+                    animateCounter(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+
+        function animateCounter(element) {
+            const statNumber = element.querySelector('.stat-number');
+            if (!statNumber) return;
+
+            const text = statNumber.textContent;
+            const match = text.match(/\d+/);
+            if (!match) return;
+
+            const target = parseInt(match[0]);
+            const suffix = text.replace(/\d+/, '');
+            let current = 0;
+            const duration = 2000;
+            const startTime = Date.now();
+
+            function update() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                current = Math.floor(target * progress);
+                statNumber.textContent = current + suffix;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            update();
+        }
+
+        document.querySelectorAll('.stat-item').forEach(el => {
+            counterObserver.observe(el);
+        });
+    </script>
+</body>
+</html>

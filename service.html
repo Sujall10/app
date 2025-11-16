@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - pearl</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0D0D0D;
+            --bg-light: #F5F5F5;
+            --text-white: #FFFFFF;
+            --text-dark: #0D0D0D;
+            --text-gray: #808080;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            overflow-x: hidden;
+            cursor: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            width: 16px;
+            height: 16px;
+            background: var(--text-white);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translate(-50%, -50%);
+        }
+
+        .custom-cursor.cursor-hover {
+            transform: translate(-50%, -50%) scale(2.5);
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            mix-blend-mode: difference;
+            transition: all 0.15s ease-out;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 32px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(13, 13, 13, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-white);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 48px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            opacity: 1;
+        }
+
+        .nav-cta {
+            background: var(--text-white);
+            color: var(--bg-dark) !important;
+            padding: 12px 24px;
+            border-radius: 100px;
+            opacity: 1 !important;
+            font-weight: 600;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-white);
+            transition: all 0.3s ease;
+        }
+
+        /* Page Hero */
+        .page-hero {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 150px 48px 80px;
+            text-align: center;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(56px, 10vw, 120px);
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+        }
+
+        .page-hero p {
+            font-size: clamp(18px, 2vw, 24px);
+            color: var(--text-gray);
+            max-width: 720px;
+            line-height: 1.5;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.4s forwards;
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 80px 48px 120px;
+        }
+
+        .services-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            gap: 80px;
+        }
+
+        .service-detail {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 80px;
+            align-items: start;
+            padding: 80px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-detail.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .service-detail:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .service-number {
+            font-size: 120px;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0.5;
+        }
+
+        .service-content h2 {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+
+        .service-content p {
+            font-size: 18px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .service-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .feature-item span {
+            font-size: 16px;
+            color: var(--text-white);
+        }
+
+        .service-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-white);
+            text-decoration: none;
+            border-radius: 100px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .service-cta:hover {
+            background: var(--text-white);
+            color: var(--bg-dark);
+        }
+
+        /* Process Section */
+        .process-section {
+            padding: 120px 48px;
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .process-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+
+        .process-header h2 {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+
+        .process-header p {
+            font-size: 20px;
+            color: #666;
+        }
+
+        .process-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+
+        .process-step {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .process-step.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0 auto 24px;
+        }
+
+        .process-step h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .process-step p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 120px 48px;
+            background: var(--bg-dark);
+        }
+
+        .pricing-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 80px;
+        }
+
+        .pricing-header h2 {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+
+        .pricing-header p {
+            font-size: 20px;
+            color: var(--text-gray);
+        }
+
+        .pricing-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 48px;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .pricing-card.visible {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-purple);
+            box-shadow: 0 24px 64px rgba(139, 92, 246, 0.2);
+        }
+
+        .pricing-card.featured {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+            border: none;
+        }
+
+        .pricing-card.featured * {
+            color: white !important;
+        }
+
+        .pricing-name {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+        }
+
+        .pricing-price {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.03em;
+        }
+
+        .pricing-period {
+            font-size: 16px;
+            color: var(--text-gray);
+            margin-bottom: 32px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .pricing-features li {
+            padding: 12px 0;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            width: 20px;
+            height: 20px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .pricing-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-white);
+            text-align: center;
+            text-decoration: none;
+            border-radius: 100px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-btn:hover {
+            background: var(--text-white);
+            color: var(--bg-dark);
+        }
+
+        .pricing-card.featured .pricing-btn {
+            background: white;
+            color: var(--accent-purple);
+            border: none;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 120px 48px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(40px, 8vw, 80px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 32px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            color: var(--text-gray);
+            margin-bottom: 48px;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            background: var(--text-white);
+            color: var(--bg-dark);
+            text-decoration: none;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.4s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark);
+            padding: 80px 48px 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 64px;
+            margin-bottom: 64px;
+        }
+
+        .footer-brand h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .footer-links h4 {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            color: var(--text-gray);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 15px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-social a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            color: var(--text-white);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .service-detail {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .process-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                cursor: auto;
+            }
+
+            .custom-cursor, .cursor-outline {
+                display: none;
+            }
+
+            header {
+                padding: 20px 24px;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            nav ul {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background: rgba(13, 13, 13, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 100px 40px;
+                gap: 32px;
+                transition: right 0.4s ease;
+                align-items: flex-start;
+            }
+
+            nav ul.active {
+                right: 0;
+            }
+
+            .page-hero {
+                padding: 120px 24px 60px;
+            }
+
+            .services-section, .process-section, .pricing-section, .cta-section {
+                padding: 60px 24px;
+            }
+
+            .service-features {
+                grid-template-columns: 1fr;
+            }
+
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Header -->
+    <header>
+        <a href="index.html" class="logo">pearl</a>
+        <nav>
+            <ul id="navMenu">
+                <li><a href="work.html">Work</a></li>
+                <li><a href="services.html" class="active">Services</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html" class="nav-cta">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <h1>Our Services</h1>
+        <p>We offer comprehensive design and development services to transform your vision into reality.</p>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section">
+        <div class="services-grid">
+            <div class="service-detail">
+                <div class="service-number">01</div>
+                <div class="service-content">
+                    <h2>Brand Strategy & Identity</h2>
+                    <p>Create a powerful brand presence that resonates with your target audience. From strategy to visual identity, we craft brands that stand out and drive business growth.</p>
+                    <div class="service-features">
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>Brand Research & Analysis</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>Logo & Visual Identity</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>Brand Guidelines</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>Marketing Collateral</span>
+                        </div>
+                    </div>
+                    <a href="contact.html" class="service-cta">
+                        Get Started
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="service-detail">
+                <div class="service-number">02</div>
+                <div class="service-content">
+                    <h2>Product Design</h2>
+                    <p>User-centered design that combines beautiful aesthetics with intuitive functionality. We create digital products that users love and businesses profit from.</p>
+                    <div class="service-features">
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>UX Research & Strategy</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>Wireframing & Prototyping</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>UI Design & Systems</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>User Testing & Iteration</span>
+                        </div>
+                    </div>
+                    <a href="contact.html" class="service-cta">
+                        Get Started
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="service-detail">
+                <div class="service-number">03</div>
+                <div class="service-content">
+                    <h2>Web Design & Development</h2>
+                    <p>Responsive, high-performance websites that deliver exceptional user experiences. From concept to launch, we build digital platforms that drive results.</p>
+                    <div class="service-features">
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>Responsive Web Design</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>Front-end Development</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>CMS Integration</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>Performance Optimization</span>
+                        </div>
+                    </div>
+                    <a href="contact.html" class="service-cta">
+                        Get Started
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="service-detail">
+                <div class="service-number">04</div>
+                <div class="service-content">
+                    <h2>Mobile App Design</h2>
+                    <p>Native and cross-platform mobile experiences that engage users and drive retention. We design apps that people want to use every day.</p>
+                    <div class="service-features">
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>iOS & Android Design</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>App Strategy & UX</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>Interaction Design</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"></div>
+                            <span>App Store Optimization</span>
+                        </div>
+                    </div>
+                    <a href="contact.html" class="service-cta">
+                        Get Started
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process-section">
+        <div class="process-header">
+            <h2>Our Process</h2>
+            <p>A proven methodology that delivers exceptional results</p>
+        </div>
+        <div class="process-grid">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <h3>Discovery</h3>
+                <p>We dive deep into your business, goals, and target audience to understand your unique needs.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <h3>Strategy</h3>
+                <p>We develop a comprehensive strategy that aligns with your objectives and sets the foundation for success.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <h3>Design</h3>
+                <p>Our team crafts beautiful, functional designs that bring your vision to life with pixel-perfect precision.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <h3>Launch</h3>
+                <p>We deliver your project on time, provide training, and ensure a smooth transition to success.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section">
+        <div class="pricing-header">
+            <h2>Flexible Pricing</h2>
+            <p>Choose the package that fits your needs and budget</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-name">Starter</div>
+                <div class="pricing-price">$5,000</div>
+                <div class="pricing-period">One-time project</div>
+                <ul class="pricing-features">
+                    <li>Brand Identity Design</li>
+                    <li>5 Page Website</li>
+                    <li>Responsive Design</li>
+                    <li>Basic SEO Setup</li>
+                    <li>2 Rounds of Revisions</li>
+                    <li>30 Days Support</li>
+                </ul>
+                <a href="contact.html" class="pricing-btn">Get Started</a>
+            </div>
+
+            <div class="pricing-card featured">
+                <div class="pricing-name">Professional</div>
+                <div class="pricing-price">$15,000</div>
+                <div class="pricing-period">One-time project</div>
+                <ul class="pricing-features">
+                    <li>Complete Brand Strategy</li>
+                    <li>Custom Web Application</li>
+                    <li>Advanced Animations</li>
+                    <li>CMS Integration</li>
+                    <li>Unlimited Revisions</li>
+                    <li>90 Days Support</li>
+                    <li>Priority Support</li>
+                </ul>
+                <a href="contact.html" class="pricing-btn">Get Started</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to start your project?</h2>
+        <p>Contact our team to get a tailored quote and timeline.</p>
+        <a href="contact.html" class="cta-btn">
+            <span>Contact Us</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>pearl</h3>
+                <p>A creative studio dedicated to crafting exceptional digital experiences and memorable brand identities.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="work.html">Work</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">Branding</a></li>
+                    <li><a href="services.html">Product Design</a></li>
+                    <li><a href="services.html">Web Design</a></li>
+                    <li><a href="services.html">Development</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Social</h4>
+                <ul>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Dribbble</a></li>
+                    <li><a href="#">Behance</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Pearl. All rights reserved.</p>
+            <div class="footer-social">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            // Cursor
+            const cursor = document.querySelector('.custom-cursor');
+            const cursorOutline = document.querySelector('.cursor-outline');
+            if (cursor && cursorOutline) {
+                let mouseX = 0, mouseY = 0;
+                let cursorX = 0, cursorY = 0;
+                let outlineX = 0, outlineY = 0;
+
+                document.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                });
+
+                function animateCursor() {
+                    cursorX += (mouseX - cursorX) * 0.5;
+                    cursorY += (mouseY - cursorY) * 0.5;
+                    outlineX += (mouseX - outlineX) * 0.15;
+                    outlineY += (mouseY - outlineY) * 0.15;
+
+                    cursor.style.left = cursorX + 'px';
+                    cursor.style.top = cursorY + 'px';
+                    cursorOutline.style.left = outlineX + 'px';
+                    cursorOutline.style.top = outlineY + 'px';
+
+                    requestAnimationFrame(animateCursor);
+                }
+                animateCursor();
+            }
+
+            // Hover effects
+            const hoverSelectors = 'a, button, .service-cta, .cta-btn, .pricing-btn';
+            const hoverElements = document.querySelectorAll(hoverSelectors);
+            hoverElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    if (cursor) cursor.classList.add('cursor-hover');
+                    if (cursorOutline) { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; }
+                });
+                el.addEventListener('mouseleave', () => {
+                    if (cursor) cursor.classList.remove('cursor-hover');
+                    if (cursorOutline) { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; }
+                });
+            });
+
+            // Mobile menu
+            const menuToggle = document.getElementById('menuToggle');
+            const navMenu = document.getElementById('navMenu');
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                    const spans = menuToggle.querySelectorAll('span');
+                    if (navMenu.classList.contains('active')) {
+                        spans[0].style.transform = 'rotate(45deg) translateY(8px)';
+                        spans[1].style.opacity = '0';
+                        spans[2].style.transform = 'rotate(-45deg) translateY(-8px)';
+                    } else {
+                        spans[0].style.transform = 'none';
+                        spans[1].style.opacity = '1';
+                        spans[2].style.transform = 'none';
+                    }
+                });
+
+                navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    const spans = menuToggle.querySelectorAll('span');
+                    spans[0].style.transform = 'none';
+                    spans[1].style.opacity = '1';
+                    spans[2].style.transform = 'none';
+                }));
+            }
+
+            // Reveal observer
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.2, rootMargin: '0px 0px -100px 0px' });
+
+            ['.service-detail', '.process-step', '.pricing-card', '.stat-item'].forEach(sel => document.querySelectorAll(sel).forEach(el => revealObserver.observe(el)));
+
+            // Stat counters
+            function animateCounter(element) {
+                const target = (element && element.textContent) ? element.textContent.trim() : '0';
+                const numericValue = parseInt(target.replace(/\D/g, '')) || 0;
+                const suffix = target.replace(/[0-9]/g, '');
+                const duration = 1500;
+                const increment = Math.max(1, Math.floor(numericValue / (duration / 16)));
+                let current = 0;
+                const update = () => {
+                    current += increment;
+                    if (current < numericValue) { element.textContent = Math.floor(current) + suffix; requestAnimationFrame(update); } else { element.textContent = target; }
+                };
+                update();
+            }
+
+            const statObserver = new IntersectionObserver(entries => { entries.forEach(entry => { if (entry.isIntersecting && !entry.target.classList.contains('counted')) { entry.target.classList.add('counted'); const number = entry.target.querySelector('.stat-number'); if (number) animateCounter(number); } }); }, { threshold: 0.5 });
+            document.querySelectorAll('.stat-item').forEach(el => statObserver.observe(el));
+        })();
+    </script>
+</body>
+</html>
